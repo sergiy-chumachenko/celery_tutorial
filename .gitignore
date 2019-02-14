@@ -103,5 +103,10 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+
+# env
+.env/
+env_script.env
+
 # pycharm
 .idea/
