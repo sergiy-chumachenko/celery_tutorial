@@ -65,11 +65,35 @@ $ sudo rabbitmqctl set_user_tags myuser administrator
 $ sudo rabbitmq-plugins enable rabbitmq_management
 $ sudo service rabbitmq-server restart
 ```
+#### Redis for Result Backend
+##### Install Redis
+In Terminal:
+
+`$ sudo apt install redis-server`
+
+In Virtual Environment:
+
+`pip install redis`
+
+##### Configuring a Redis Password
+`$ sudo nano /etc/redis/redis.conf`
+
+Scroll to the SECURITY section and look for a commented directive that reads:
+
+`# requirepass foobared`
+
+Uncomment it by removing the #, and change foobared to a secure password.
+
+`$ sudo systemctl restart redis.service`
+
 #### Create env script env_script.env in project directory
 ```
 export BROKER_USER={RabbitMQ USER}
 export BROKER_PASSWORD={RabbitMQ PASSWORD}
 export BROKER_VHOST={RabbitMQ VHOST}
+export BACKEND_REDIS_PASSWORD={Redis PASSWORD}
+export BACKEND_REDIS_HOST={Redis HOST} #default 127.0.0.1
+export BACKEND_REDIS_PORT={Redis PORT} #default 6379
 ```
 #### Modify Celery Configuration (tasks.py)
 ```
@@ -86,8 +110,9 @@ with open('env_script.env') as f:
         os.environ[key] = value
         
 app = Celery('tasks',
-             backend='rpc://',
-             broker='amqp://'+ os.environ['BROKER_USER'] +
+             backend='redis://:' + os.environ['BACKEND_REDIS_PASSWORD'] + '@' +
+                     os.environ['BACKEND_REDIS_HOST'] + ':' + os.environ['BACKEND_REDIS_PORT'] + '/0',
+             broker='amqp://' + os.environ['BROKER_USER'] +
                     ':' + os.environ['BROKER_PASSWORD'] + '@localhost:5672/' + os.environ['BROKER_VHOST']
              )
 ```
