@@ -14,6 +14,11 @@ broker_url = 'amqp://' + os.environ['BROKER_USER'] + ':' + os.environ['BROKER_PA
 result_backend = 'redis://:' + os.environ['BACKEND_REDIS_PASSWORD'] + '@' + \
                  os.environ['BACKEND_REDIS_HOST'] + ':' + os.environ['BACKEND_REDIS_PORT'] + '/0'
 
+imports = ('tasks.tasks', 'soup.tasks', )
+task_routes = ([
+    ('soup.tasks.*', {'queue': 'soup'}),
+    ('tasks.tasks.*', {'queue': 'tasks'}),
+],)
 # task_serializer = 'json'
 # result_serializer = 'json'
 # accept_content = ['json']

@@ -1,4 +1,4 @@
-from tasks import add
+from tasks.tasks import add
 
 
 # result = tasks.add.delay(10, 20)

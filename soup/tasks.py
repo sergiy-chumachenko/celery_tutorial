@@ -4,8 +4,8 @@ from collections import Counter
 from celery_app import app
 
 
-@app.task
-def map(url):
+@app.task()
+def my_map(url):
     c = Counter()
     request = requests.get(url)
     soup = BeautifulSoup(request.text, "html.parser")
@@ -17,8 +17,12 @@ def map(url):
 
 
 @app.task
-def reduce(counters):
+def my_reduce(counters):
     res = counters[0]
     for c in counters[1:]:
         res += c
     return res
+
+
+if __name__ == "__main__":
+    app.start()
