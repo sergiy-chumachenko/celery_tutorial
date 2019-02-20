@@ -1,5 +1,4 @@
 from celery import Celery
-import tasks, soup
 
 app = Celery('tasks')
 app.config_from_object('celeryconfig')
